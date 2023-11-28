@@ -24,11 +24,6 @@ export class UsersService {
 
   async create(user: CreateUserDto) {
     const newUser = new this.userModel(user)
-
-    // hash password
-    // const hashedPassowrd = await hashPassword(user.password)
-    // newUser.password = hashedPassowrd
-
     await newUser.save()
     return newUser
   }

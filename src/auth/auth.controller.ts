@@ -3,6 +3,14 @@ import { AuthService } from './auth.service'
 import { CreateUserDto } from 'src/dto/create-user.dto'
 import { LoginDto } from './dto/login.dto'
 import { AuthGuard } from './auth.guard'
+import { RolesGuard } from './guard/roles.guard'
+import { roles } from './types/roles.types'
+import { Roles } from './decorators/role.decorator'
+import { Auth } from './decorators/auth.decorators'
+
+interface RequestWithUser extends Request {
+  user: { email: string; role: string, username: string, name: string }
+}
 
 @Controller('auth')
 export class AuthController {
@@ -15,10 +23,6 @@ export class AuthController {
     return this.authService.register(user)
   }
 
-  /*  
-    El decorador @HttpCode(HttpStatus.OK) es una característica de Nest.js que te permite establecer explícitamente el código de estado HTTP que se enviará como respuesta para una ruta específica de un controlador. 
-    En este caso particular, el decorador está configurado para devolver un código de estado HTTP 200 (OK) cuando se realiza una solicitud POST a la ruta /login.
-  */
   @HttpCode(HttpStatus.OK)
   @Post('login')
   login(@Body() user: LoginDto) {
@@ -26,9 +30,20 @@ export class AuthController {
   }
 
 
+  // Sin composicion de decoradores
   @Get('profile')
-  @UseGuards(AuthGuard)
-  profile(@Request() req) {
+  @Roles(roles.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  profile(@Request() req: RequestWithUser) {
+    console.log('ejecutao despues', req.user)
+    return req.user
+  }
+
+  // Con composicion de decoradores
+  @Get('profile2')
+  @Auth(roles.ADMIN)
+  profile2(@Request() req: RequestWithUser) {
+    console.log('ejecutao despues', req.user)
     return req.user
   }
 }

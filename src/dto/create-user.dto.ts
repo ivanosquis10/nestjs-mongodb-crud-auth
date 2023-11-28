@@ -20,7 +20,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   username: string
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
-  admin: boolean
+  role: string
 }

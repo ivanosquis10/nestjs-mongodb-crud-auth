@@ -18,8 +18,8 @@ export class User {
   @Prop({ required: true, trim: true })
   username: string
 
-  @Prop({ default: false })
-  admin: boolean
+  @Prop({ default: 'user' })
+  role: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

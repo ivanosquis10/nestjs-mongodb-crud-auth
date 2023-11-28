@@ -12,8 +12,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService
   ) {}
-
-  async register({ email, name, password, username, admin }: CreateUserDto) {
+  async register({ email, name, password, username, role }: CreateUserDto) {
     const user = await this.usersService.getUserByEmail(email)
 
     if (user) throw new BadRequestException('User already exists')
@@ -25,7 +24,7 @@ export class AuthService {
       name,
       password: hashedPassowrd,
       username,
-      admin
+      role
     })
 
     return {
@@ -42,10 +41,9 @@ export class AuthService {
 
     if (!isValidPassowrd) throw new UnauthorizedException('Invalid password')
 
-    const payload = { email: user.email, username: user.username, name: user.name, admin: user.admin }
+    const payload = { email: user.email, username: user.username, name: user.name, role: user.role }
 
     const token = await this.jwtService.signAsync(payload)
-
     return {
       email: user.email,
       token
